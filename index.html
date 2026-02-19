@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Generator</title>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+    <link rel="stylesheet" href="./style.css">
+
+    <script src="./script.js" defer></script>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Password Generator</h1>
+
+        <div class="input-box">
+            <input type="text" id="password" disabled>
+            <span class="material-symbols-outlined" title="Copy to Clipboard">
+                content_copy
+            </span>
+        </div>
+
+
+        <div class="row">
+            <input type="range" min="1" max="16" class="length" value="8">
+
+            <div class="line">
+                <p>Password Length:</p>
+                <span class="length-txt">8</span>
+            </div>
+
+            <div class="line">
+                <label for="lowercase">Include Lowercase Characters (a-z)</label>
+                <input type="checkbox" id="lowercase" checked>
+            </div>
+
+            <div class="line">
+                <label for="uppercase">Include Uppercase Characters (A-Z)</label>
+                <input type="checkbox" id="uppercase">
+            </div>
+
+            <div class="line">
+                <label for="number">Include Numbers (0-9)</label>
+                <input type="checkbox" id="number">
+            </div>
+
+            <div class="line">
+                <label for="symbol">Include Symbols (!, @, #, etc.)</label>
+                <input type="checkbox" id="symbol">
+            </div>
+        </div>
+        <div class="msg">Please select at least one category</div>
+
+        <input type="button" value="Generate Password" id="gnrt-btn">
+
+    </div>
+</body>
+
+</html>
