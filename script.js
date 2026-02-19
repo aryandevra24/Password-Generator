@@ -1,73 +1,99 @@
-const pwd = document.querySelector('#password')
-const cpBtn = document.querySelector('.input-box>span')
+/*    ELEMENT SELECTORS */
+const passwordInput = document.querySelector('#password')
+const copyButton = document.querySelector('.input-box>span')
+const lengthSlider = document.querySelector('.length')
+const lengthLabel = document.querySelector('.length-txt')
+const warningMessage = document.querySelector('.msg')
 
-cpBtn.addEventListener('click', async () => {
-    await navigator.clipboard.writeText(pwd.value);
+const lowercaseCheckbox = document.querySelector('#lowercase')
+const uppercaseCheckbox = document.querySelector('#uppercase')
+const numberCheckbox = document.querySelector('#number')
+const symbolCheckbox = document.querySelector('#symbol')
 
-    cpBtn.style.cursor = 'default'
-    cpBtn.title = "Copied!"
-    cpBtn.innerHTML = "       assignment_turned_in"
-
-    setTimeout(() => {
-        cpBtn.style.cursor = 'pointer'
-        cpBtn.title = "Copy to Clipboard"
-        cpBtn.innerHTML = "content_copy"
-    }, 2000)
-})
+const generateButton = document.querySelector('#gnrt-btn')
 
 
-const range = document.querySelector('.length')
-const lengthTxt = document.querySelector('.length-txt')
+/*   CONSTANT CHAR SETS*/
+const CHARSETS = {
+    upper: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+    lower: 'abcdefghijklmnopqrstuvwxyz',
+    numbers: '0123456789',
+    symbols: '~!@$%^&*()-_=+[{]}\\|;:\'",<.>/?'
+}
 
-range.addEventListener('change', (e) => {
-    lengthTxt.textContent = range.value
-})
+
+/*    CLIPBOARD FUNCTIONS */
+async function copyPasswordToClipboard() {
+    await navigator.clipboard.writeText(passwordInput.value)
+    showCopiedState()
+}
+
+function showCopiedState() {
+    copyButton.style.cursor = 'default'
+    copyButton.title = "Copied!"
+    copyButton.innerHTML = "assignment_turned_in"
+
+    setTimeout(resetCopyButtonState, 2000)
+}
+
+function resetCopyButtonState() {
+    copyButton.style.cursor = 'pointer'
+    copyButton.title = "Copy to Clipboard"
+    copyButton.innerHTML = "content_copy"
+}
 
 
-const msg = document.querySelector('.msg')
+/*   PASSWORD GENERATION*/
+function getSelectedCharacters() {
+    let characters = ''
+    if (lowercaseCheckbox.checked) characters += CHARSETS.lower
+    if (uppercaseCheckbox.checked) characters += CHARSETS.upper
+    if (numberCheckbox.checked) characters += CHARSETS.numbers
+    if (symbolCheckbox.checked) characters += CHARSETS.symbols
+    return characters
+}
 
-const lowercase = document.querySelector('#lowercase')
-const uppercase = document.querySelector('#uppercase')
-const number = document.querySelector('#number')
-const symbol = document.querySelector('#symbol')
-
-function gnrtPwd() {
+function generateRandomPassword(length, characters) {
     let password = ''
-
-    let upperChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-    let lowerChars = 'abcdefghijklmnopqrstuvwxyz'
-    let nums = '0123456789'
-    let syms = '~!@$%^&*()-_=+[{]}\|;:\'",<.>/?'
-
-    let allChars = ''
-    allChars += lowercase.checked ? lowerChars : ''
-    allChars += uppercase.checked ? upperChars : ''
-    allChars += number.checked ? nums : ''
-    allChars += symbol.checked ? syms : ''
-
-    if (!allChars) {
-        msg.style.display = 'block'
-        return
-    } else {
-        msg.style.display = 'none'
+    for (let i = 0; i < length; i++) {
+        const randomIndex = Math.trunc(Math.random() * characters.length)
+        password += characters[randomIndex]
     }
-
-    for (let i = 0; i < range.value; i++) {
-        password += allChars[Math.trunc(Math.random() * allChars.length)]
-    }
-
     return password
 }
 
+function generatePasswordHandler() {
+    const characters = getSelectedCharacters()
 
-const gnrtBtn = document.querySelector('#gnrt-btn')
+    if (!characters) {
+        warningMessage.style.display = 'block'
+        return
+    }
 
-gnrtBtn.addEventListener('click', () => {
-    setPwd()
-})
-
-function setPwd() {
-    pwd.value = gnrtPwd() ?? pwd.value
+    warningMessage.style.display = 'none'
+    passwordInput.value = generateRandomPassword(lengthSlider.value, characters)
 }
 
-setPwd()
+
+/*    UI FUNCTIONS */
+function updateLengthLabel() {
+    lengthLabel.textContent = lengthSlider.value
+}
+
+
+/*   EVENT LISTENERS*/
+function setupEventListeners() {
+    copyButton.addEventListener('click', copyPasswordToClipboard)
+    generateButton.addEventListener('click', generatePasswordHandler)
+    lengthSlider.addEventListener('change', updateLengthLabel)
+}
+
+
+/*   MAIN ENTRY FUNCTION*/
+function main() {
+    setupEventListeners()
+    updateLengthLabel()
+    generatePasswordHandler() // generate first password on load
+}
+
+main()
